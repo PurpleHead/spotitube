@@ -1,14 +1,11 @@
-import { LitElement, html } from "lit";
-import { router } from "../router";
+import { LitElement, html } from 'lit'
 
 export class AppOther extends LitElement {
-
-    template = html `
+  template = html`
         <h1>Other</h1>
     `
 
-    render () {
-        return this.template
-    }
-
+  render () {
+    return this.template
+  }
 }
