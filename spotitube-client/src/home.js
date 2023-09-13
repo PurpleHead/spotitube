@@ -1,5 +1,5 @@
 import { LitElement, html } from 'lit'
-import { router } from '../router'
+import { spotifyService } from '../services/spotify-service'
 
 export class AppHome extends LitElement {
   template = html`
@@ -8,7 +8,7 @@ export class AppHome extends LitElement {
     `
 
   click (event) {
-    router.route('app-other')
+    spotifyService.login()
   }
 
   render () {

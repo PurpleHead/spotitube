@@ -5,15 +5,9 @@ class Router {
 
   onPageLoad () {
     console.log('page loaded')
-    console.log(this.components)
-    if (window.location.search) {
-      const urlParams = new URLSearchParams(window.location.search)
-      const page = urlParams.get('page')
-
-      if (page && this.components.includes(page)) {
-        this.route(page)
-      }
-    }
+    this.defaultPage = 'app-home'
+    this.routeToUrlParam()
+    window.onpopstate = () => this.routeToUrlParam()
   }
 
   defineComponent (name, clazz) {
@@ -23,11 +17,28 @@ class Router {
 
   route (component) {
     const content = document.getElementById('content')
-    if (content && this.components.includes(component)) {
+    if (!this.components.includes(component)) {
+      component = this.defaultPage
+    }
+    if (content) {
       const newContent = document.createElement(component)
       newContent.setAttribute('id', 'content')
       content.replaceWith(newContent)
       history.pushState(null, '', '?page=' + component)
+    }
+  }
+
+  routeToUrlParam () {
+    if (window.location.search) {
+      const urlParams = new URLSearchParams(window.location.search)
+      const page = urlParams.get('page')
+
+      if (page) {
+        this.route(page)
+      }
+    } else {
+      // Route to home, if search is empty
+      this.route()
     }
   }
 }
