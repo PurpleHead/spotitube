@@ -2,17 +2,12 @@ import { router } from './router'
 import { AppHome } from './src/home'
 import { AppOther } from './src/other'
 
-appendScript('/src/home.js')
-appendScript('/src/other.js')
+const dotenv = require('dotenv')
+dotenv.config()
+
+console.log(process.env.APP_ID)
 
 router.defineComponent('app-home', AppHome)
 router.defineComponent('app-other', AppOther)
 
 router.onPageLoad()
-
-function appendScript (name) {
-  const element = document.createElement('script')
-  element.setAttribute('src', name)
-  element.setAttribute('type', 'module')
-  document.head.appendChild(element)
-}
