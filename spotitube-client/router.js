@@ -1,3 +1,5 @@
+import { spotifyService } from './services/spotify-service'
+
 class Router {
   constructor () {
     this.components = []
@@ -6,8 +8,8 @@ class Router {
   onPageLoad () {
     console.log('page loaded')
     this.defaultPage = 'app-home'
-    this.routeToUrlParam()
-    window.onpopstate = () => this.routeToUrlParam()
+    this.handleUrlParams()
+    window.onpopstate = () => this.handleUrlParams()
   }
 
   defineComponent (name, clazz) {
@@ -24,16 +26,27 @@ class Router {
       const newContent = document.createElement(component)
       newContent.setAttribute('id', 'content')
       content.replaceWith(newContent)
-      history.pushState(null, '', '?page=' + component)
+
+      this.updateUrlParams(new URLSearchParams({
+        page: component
+      }))
     }
   }
 
-  routeToUrlParam () {
+  // Updates the url params without reloading the page
+  updateUrlParams (urlParams) {
+    history.pushState(null, '', `?${urlParams.toString()}`)
+  }
+
+  handleUrlParams () {
     if (window.location.search) {
       const urlParams = new URLSearchParams(window.location.search)
       const page = urlParams.get('page')
+      const spotifyAuthCode = urlParams.get('code')
 
-      if (page) {
+      if (spotifyAuthCode) {
+        spotifyService.requestAccessToken(spotifyAuthCode)
+      } else if (page) {
         this.route(page)
       }
     } else {

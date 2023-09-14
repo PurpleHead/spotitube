@@ -8,7 +8,7 @@ export class AppHome extends LitElement {
     `
 
   click (event) {
-    spotifyService.login()
+    spotifyService.requestAuthorizationCode()
   }
 
   render () {
