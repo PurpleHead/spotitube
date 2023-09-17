@@ -5,7 +5,30 @@ const ACCOUNTS_URI = 'https://accounts.spotify.com'
 const REDIRECT_URI = 'http://localhost:9000'
 const CLIENT_ID = process.env.CLIENT_ID
 
+const SCOPES = 'user-read-playback-state user-modify-playback-state user-read-currently-playing app-remote-control streaming'
+
 class SpotifyService {
+  init () {
+    window.onSpotifyWebPlaybackSDKReady = () => {
+      /* global Spotify */
+      /* eslint no-undef: "error" */
+      const player = new Spotify.Player({
+        name: 'Spotitube',
+        getOAuthToken: cb => { cb(localStorage.getItem('access_token')) }
+      })
+
+      player.addListener('ready', ({ deviceId }) => {
+        console.log('Ready with Device ID', deviceId)
+      })
+
+      player.addListener('not_ready', ({ deviceId }) => {
+        console.log('Device ID has gone offline', deviceId)
+      })
+
+      player.connect()
+    }
+  }
+
   async requestAuthorizationCode () {
     const state = this.generateRandomString(16)
     const codeVerifier = this.generateRandomString(128)
@@ -14,6 +37,7 @@ class SpotifyService {
       response_type: 'code',
       client_id: CLIENT_ID,
       redirect_uri: REDIRECT_URI,
+      scope: SCOPES,
       state,
       code_challenge_method: 'S256',
       code_challenge: codeChallenge

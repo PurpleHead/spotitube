@@ -51,7 +51,7 @@ class Router {
       }
     } else {
       // Route to home, if search is empty
-      this.route()
+      this.route() // TODO
     }
   }
 }
